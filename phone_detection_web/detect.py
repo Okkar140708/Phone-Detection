@@ -4,6 +4,10 @@ import time
 import threading
 from ultralytics import YOLO
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+import socket
+
+
+
 # ---------------- CONFIG ----------------
 MODEL_PATH   = '/home/okkar-aung/ros2_ws/src/phone_detection_web/best.pt'
 CAMERA_INDEX = 0
@@ -25,10 +29,27 @@ cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 cap.set(cv2.CAP_PROP_FPS, 30)
 
-print(f"Model loaded! Open http://192.168.0.111:8080")
+# ---------------- Trying to get the Local IP address -------------------
+def get_local_ip():
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except Exception:
+        return "127.0.0.1"
+
+LOCAL_IP = get_local_ip()
+print(f"Model loaded! Open http://{LOCAL_IP}:{PORT}")
+
+# print(f"Model loaded! Open http://192.168.179.235:8080")
+
 
 latest_frame = None
 lock = threading.Lock()
+
+
 
 # ---------------- DETECTION LOOP ----------------
 def detection_loop():
