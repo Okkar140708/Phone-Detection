@@ -5,11 +5,11 @@ import threading
 from ultralytics import YOLO
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import socket
-
+import os
 
 
 # ---------------- CONFIG ----------------
-MODEL_PATH   = '/home/okkar-aung/ros2_ws/src/phone_detection_web/best.pt'
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "best.pt")
 CAMERA_INDEX = 0
 CONFIDENCE   = 0.5
 PORT         = 8080
@@ -23,6 +23,7 @@ FOCAL_LENGTH = 1428
 # ---------------- INIT ----------------
 print("Loading model...")
 model = YOLO(MODEL_PATH)
+print(f"Model path {MODEL_PATH} loaded successfully.")
 
 cap = cv2.VideoCapture(CAMERA_INDEX)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
