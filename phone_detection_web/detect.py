@@ -8,8 +8,9 @@ import socket
 import os
 
 
+
 # ---------------- CONFIG ----------------
-MODEL_PATH = os.path.join(os.path.dirname(__file__), "best.pt")
+MODEL_PATH   = os.path.join(os.path.dirname(__file__), "best.pt")
 CAMERA_INDEX = 0
 CONFIDENCE   = 0.5
 PORT         = 8080
@@ -23,7 +24,6 @@ FOCAL_LENGTH = 1428
 # ---------------- INIT ----------------
 print("Loading model...")
 model = YOLO(MODEL_PATH)
-print(f"Model path {MODEL_PATH} loaded successfully.")
 
 cap = cv2.VideoCapture(CAMERA_INDEX)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
@@ -42,9 +42,10 @@ def get_local_ip():
         return "127.0.0.1"
 
 LOCAL_IP = get_local_ip()
-print(f"Model loaded! Open http://{LOCAL_IP}:{PORT}")
+print(f"Model Path : {MODEL_PATH} \nModel loaded!")
+print(f"Open http://{LOCAL_IP}:{PORT}")
 
-# print(f"Model loaded! Open http://192.168.179.235:8080")
+
 
 
 latest_frame = None
