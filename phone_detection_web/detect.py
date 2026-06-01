@@ -12,16 +12,19 @@ import os
 # ---------------- CONFIG ----------------
 MODEL_PATH   = os.path.join(os.path.dirname(__file__), "best.pt")
 CAMERA_INDEX = 0
-CONFIDENCE   = 0.5
+CONFIDENCE   = 0.6
 PORT         = 8080
 
 IMG_SIZE     = 320       # faster inference
 FRAME_SKIP   = 1        # process every 1st frame
 JPEG_QUALITY = 70        # lower = faster streaming
-REAL_WIDTH = 0.07           # phone width in meters (7 cm)
-FOCAL_LENGTH = 1428  
+focal_length = 1250 # focal length in cm
+width = 7 # phone actual length in cm
+height = 7 # not the actual height, but the correct value for formula when I hold vertically
+
 
 # ---------------- INIT ----------------
+
 print("Loading model...")
 model = YOLO(MODEL_PATH)
 
@@ -85,10 +88,27 @@ def detection_loop():
 
             for box in result.boxes:
                 x1, y1, x2, y2 = map(int, box.xyxy[0].tolist())
+                
                 conf = float(box.conf[0])
                 cls_id = int(box.cls[0])
+                pixel_width = x2 - x1
+                pixel_height = y2-y1
 
-                label = f"{result.names.get(cls_id, cls_id)} {conf:.2f}"
+                #calibration for holding vertical or horizontal
+                if pixel_width >= pixel_height:
+                    real_size = width
+                    pixel_size = pixel_width
+                else: 
+                    real_size = height
+                    pixel_size = pixel_height
+
+                if pixel_size > 0:
+                    # Distance Formula
+                    distance = ( real_size* focal_length) / pixel_size
+                    # Create label with distance (e.g., "cell phone 45.2cm")
+                    label = f"{result.names.get(cls_id, cls_id)} {distance:.1f}cm"
+                else:
+                    label = f"{result.names.get(cls_id, cls_id)}"
 
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
