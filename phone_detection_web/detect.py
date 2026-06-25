@@ -34,17 +34,7 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 cap.set(cv2.CAP_PROP_FPS, 30)
 
 # ---------------- Trying to get the Local IP address -------------------
-def get_local_ip():
-    try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8", 80))
-        ip = s.getsockname()[0]
-        s.close()
-        return ip
-    except Exception:
-        return "127.0.0.1"
-
-LOCAL_IP = get_local_ip()
+LOCAL_IP = "127.0.0.1" 
 print(f"Model Path : {MODEL_PATH} \nModel loaded!")
 print(f"Open http://{LOCAL_IP}:{PORT}")
 
